@@ -68,6 +68,7 @@ int pocl_llvm_get_kernels_metadata(cl_program program, unsigned device_i);
  * WG function that might be specialized according to the properties of
  * the given Command.
  */
+POCL_EXPORT
 int pocl_llvm_generate_workgroup_function (unsigned DeviceI,
                                            cl_device_id Device,
                                            cl_kernel Kernel,
