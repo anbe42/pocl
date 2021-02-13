@@ -9,6 +9,7 @@ Notable User Facing Changes
   - improved local variables support
   - OpenCL 2.0 atomics are now supported
   - work_group_barrier, to_local/to_global are implemented
+- Stop building libllvmopencl.so which is no longer used since 0.14.
 
 1.6 December 2020
 =================

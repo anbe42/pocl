@@ -100,39 +100,3 @@ endif(MSVC)
 #noinst_LTLIBRARIES = libllvmpasses.la
 add_library("llvmpasses" OBJECT ${LLVMPASSES_SOURCES})
 harden("llvmpasses")
-
-# This creates a separate llvmopencl.so that is loaded to 'opt'
-# for the pocl-workgroup version.
-#pkglib_LTLIBRARIES = llvmopencl.la
-add_library("llvmopencl" MODULE "$<TARGET_OBJECTS:llvmpasses>")
-harden("llvmopencl")
-
-# not sure where other platforms get their library linkage list, probably there is
-# way to make this more consistent on different platforms
-if(MSVC)
-  target_link_libraries("llvmopencl" ${POCL_LLVM_LIBS})
-endif(MSVC)
-
-#target_link_libraries("llvmopencl" "${LLVM_SYSLIBS}")
- 
-# TODO cmake should handle this, i might me missing something …
-if(APPLE)
-  set(ADD_LD_FLAGS "-Wl,-undefined -Wl,dynamic_lookup ")
-else()
-  set(ADD_LD_FLAGS "-Wl,-export-dynamic")
-endif()
-
-# TODO ENABLE_EXPORTS -> Wl,export_dynamic
-# http://www.cmake.org/cmake/help/v2.8.12/cmake.html#prop_tgt:ENABLE_EXPORTS
-# http://www.cmake.org/pipermail/cmake/2011-November/047708.html
-set_target_properties("llvmopencl" PROPERTIES LINK_FLAGS "${LLVM_LDFLAGS} ${ADD_LD_FLAGS}")
-if(NOT APPLE)
-  set_target_properties("llvmopencl" PROPERTIES SOVERSION "${KERNEL_COMPILER_LIB_VERSION}" VERSION "${KERNEL_COMPILER_LIB_VERSION}")
-endif()
-
-install(TARGETS "llvmopencl"
-        LIBRARY DESTINATION ${POCL_INSTALL_PRIVATE_LIBDIR}
-        COMPONENT "lib"
-        ARCHIVE DESTINATION ${POCL_INSTALL_PRIVATE_LIBDIR}/static
-        COMPONENT "dev"
-)
